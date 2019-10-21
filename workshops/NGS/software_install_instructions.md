@@ -1,6 +1,9 @@
 Install instructions for the software required by the NGS Workshop Problemset
 ==============================================
 
+get the software precompiled via https://www.dropbox.com/s/zn4m0oqbasg4gal/software.tar.gz?dl=0
+
+
 FastQC
 ------
 1. Download the [Mac DMG image](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.8.dmg) of FastQC.
