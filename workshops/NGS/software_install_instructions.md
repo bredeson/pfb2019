@@ -1,7 +1,7 @@
 Install instructions for the software required by the NGS Workshop Problemset
 ==============================================
 
-get the software precompiled via https://www.dropbox.com/s/zn4m0oqbasg4gal/software.tar.gz?dl=0
+get the software precompiled via https://www.dropbox.com/s/zn4m0oqbasg4gal/software.tar.gz
 
 
 FastQC
