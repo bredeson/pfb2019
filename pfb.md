@@ -4825,7 +4825,7 @@ When we write functions we group core Python functions and methods to create a u
 
 These new functions make our code easier to read and to write, especially if you will use the function many times.
 
-A conceptual difference between a fucntion and a class is that a function usually does one thing, while a class will do many related things to help solve a problem.
+A conceptual difference between a function and a class is that a function usually does one thing, while a class will do many related things to help solve a problem.
 
 What is a class really, what does it do? A class doesn't really do anything except for setting a list of rules for creating a new custom object. Every time you use the class you are creating an instance of a type of object.   
 
@@ -5017,7 +5017,7 @@ Now let's use the `reverse_complement()` method
 >>> dna_rec_obj.sequence
 'ACGTAGCTGACGATC'
 >>> dna_rec_obj.reverse_complement()
-TGCATCGACTGCTAG
+GATCGTCAGCTACGT
 ```
 Wow!! Getting the reverse complement in one line is pretty nice!
 
@@ -5042,7 +5042,7 @@ The `init` function will automatically get called when you create an object.
 
 It contains specific instructions for creating a new DNARecord Object. 
 
-It specifies how many pieces of data we want to collect from the creator of a DNAObject to use within a DNAObject.
+It specifies how many pieces of data we want to collect from the creator of a DNARecord object to use within a DNARecord object.
 
 Below our __\_\_init\_\___ instructions indicate that we want to create object attributes called `sequence`, `gene_name`, and `species_name` and to set them with the values provided as arguments when the object was created.
 
@@ -5053,7 +5053,7 @@ Here is our new class definition and new object creation when using the  __\_\_i
 class DNARecord(object):
   
   # define class attributes
-  def __init__(self, sequence, gene_name, species_name):
+  def __init__(self, sequence, gene_name, species_name): ## note that '__init__' is wrapped with two underscores
     #sequence = 'ACGTAGCTGACGATC'
     #gene_name = 'ABC1'
     #species_name = 'Drosophila melanogaster'

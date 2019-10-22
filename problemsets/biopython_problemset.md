@@ -52,6 +52,9 @@ gunzip uniprot_sprot.fasta.gz
 ```
 This will create a file `uniprot_sprot.fasta`
 
+**Do not add uniprot_sprot.fasta to your github repo. It is too big.*** To be safe, find your .gitignore in the root of your github repository. Add `uniprot_sprot.fasta*` anywhere in the file. Make sure to add this file to our index as you are updating your repo.
+
+
 3. What does the file contain? How many records? Does it look intact? How do you know?
 
 Extract IDs from fasta file
@@ -74,8 +77,8 @@ These questions will take some research and set up. Spend some time reading abou
 2. Print the E-value and the score and the length of the alignment and the % similiarity (not % identity)
 
 __Install NCBI Blast+__
-1. [Download NCBI BLAST+](http://lmgtfy.com/q=download+ncbi+blast+plus)
-2. [BLAST+ executables](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) found in google search.
+1. [Download NCBI BLAST+](https://lmgtfy.com/?q=download+ncbi+blast&s=g&t=w)
+2. Find the ftp link to the executables on the page you found in your google search [ BLAST+ executables](https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download) 
 3. `Installers and source code are available from ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ .`
 4. Make sure you are a guest user, click continue
 5. Since we are using Macs, click on the `ncbi-blast-2.6.0+.dmg`
@@ -94,6 +97,10 @@ __Run BLAST+__
       - `-db` The file name of the FASTA formated file you formated with `makeblastdb`
       - `-out` A name of your choice for your output file, otherwise, the output is printed to the screen
       - `-evalue` The Expectation value (E) threshold for returning hits. 1e-5 is a common cutoff (Bill will say 1e-2, but we will be a tad more conservative)
-      - `-outfmt` You can choose the output format of your BLAST report. XML(5) and TAB(6) are the most common, but there are many other very helpful formats
+      - `-outfmt` Choose the output format of your BLAST report as XML(5) `-outfmt 5` .  TAB(6) is also common output but unparsable by BioPython.  
+      
+__Parse BLAST Output__
+
+1. Use BioPython to parse your XML BLAST results. Print out all the hit sequence ID that are better than 1e-5 as well as their descriptions in tab separated columns.
   
 
