@@ -147,7 +147,7 @@ NGS Workshop Tutorial
     samtools view -b -f 3 -F 3852 SRR10178655.sorted.mdup.bam >SRR10178655.sorted.mdup.filtered.bam
     ```
     
-12. Using the base quality score determined in ~~Step 9~~ (<= typo) *Step 10* as the minimum base quality threshold, call SNPs using the GATK HaplotypeCaller. **NOTE**: using `--java-options '-Xmx1G'` below allows us to increate the maximum amount of memory allocated to GATK to run. If you ever encounter out-of-memory errors, increase this value (spaces not allowed between `-Xmx` and requested memory size).
+12. Using the base quality score determined in *Step 10* as the minimum base quality threshold, call SNPs using the GATK HaplotypeCaller. **NOTE**: using `--java-options '-Xmx1G'` below allows us to increate the maximum amount of memory allocated to GATK to run. If you ever encounter out-of-memory errors, increase this value (spaces not allowed between `-Xmx` and requested memory size).
     
     **ANSWER**:
     ```bash
@@ -190,7 +190,7 @@ NGS Workshop Tutorial
     15 |                                        
     ```
     
-    **ANSWER**: See [hist.py](hist.py); I chose min depth theshold of 21 and max depth threshold of 57.
+    **ANSWER**: See [hist.py](hist.py); I chose min depth theshold of 20 and max depth threshold of 56.
 
 15. Filter SNPs and Indels for variant loci within the center 95% of the depth distribution (use your distribution from above; estimating by eye is fine). To filter loci, use VCFtools:
     ```bash
