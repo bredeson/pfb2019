@@ -12,7 +12,8 @@ NGS Workshop Tutorial
    ```bash
    export PATH=$PWD/software/bin:$PATH;
    ```
-   **NOTE**: You need to replaced `$PWD` above with the full, expanded path the the `software/bin` dir if you put the `export` statement in your `.bash_profile` or `.bashrc`.
+   **NOTE**: You need to replaced `$PWD` above with the full, expanded path to the `software/bin` dir if you put the `export` statement in your `.bash_profile` or `.bashrc`.
+   
    **ANSWER**: Download the software package with `wget`:
    ```bash
    wget https://www.dropbox.com/s/zn4m0oqbasg4gal/software.tar.gz
@@ -26,6 +27,7 @@ NGS Workshop Tutorial
 3. Download the [genome](https://www.dropbox.com/s/goo2bt4br9mqxtt/Scerevisiae.fasta.gz) and [annotation](https://www.dropbox.com/s/uq8mfp125jlgknq/Scerevisiae.gff3.gz) files using `wget` and decompress them both with `gunzip`.
 
 4. Index the genome as described in the lecture notes.
+   
    **ANSWER**: Be sure to check that your downloaded file is *actually* a FASTA file by looking at it with `less`. There should also be 17 chromosomes (if your file has fewer, try re-downloading the file using FireFox).
    ```bash
    # create the BWA index for fast read alignment:
@@ -49,17 +51,23 @@ NGS Workshop Tutorial
 
 6. Run FastQC on the FASTQ files and examine the report (see `fastqc --help` for a complete list of options).
     - How many read pairs are in included in the FASTQ file?
+      
       **ANSWER**: 2,335,497 pairs. FastQC (run separately on each end) will report the number of pairs in the "Total Sequences" field.
     - How long are the reads?
+      
       **ANSWER**: 151 bp reported in "Sequence length" field. This number is the average length if the input sequences are of non-equal lengths.
     - What quality encoding are the reads in? What is the quality offset?
+      
       **ANSWER**: The quality encoding is Sanger / Illumina 1.9. Looking at the slides on quality encoding, this means it is 33-offset.
     - For which metrics are there warnings?
+      
       **ANSWER**: for both Read 1 and Read 2: "Per base sequence content" and "Per sequence GC content"; for Read 2 only: "Overrepresented sequences"
     - Are there any over-represented sequences in the file? If so, what is it?
+      
       **ANSWER**: Yes. "Illumina Single End PCR Primer 1" which has sequence "GATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTATTAGCCGGTGTAGATCT". In a real analysis setting, we should add this sequence to our adapters file.
 
 7. Next, run the Trimmomatic adapter trimmer on the FASTQ files in "PE" mode, using this [adapter file](https://www.dropbox.com/s/tpmhcz24jluq97s/adapters.fa). What fraction of the data were discarded? **NOTE**: Trimmomatic is in it's own subdirectory `sofware/Trimmomatic-0.39/trimmomatic-0.39.jar`.
+    
     **ANSWER**: 6.45% = 100.0 - 93.55% both surviving; Large fractions of reads thrown out usually indicates that the sequencing library is contaminated with adapter dimers. This library looks pretty good.
     ```bash
     # assuming I'm working in my /Users/jessenbredeson/pfb2019/workshops/NGS directory:
@@ -74,6 +82,7 @@ NGS Workshop Tutorial
     ```
 
 8. Align the reads to the genome sequence using BWA-MEM. Convert the file to BAM format, sort the BAM file, and index it (see lecture notes for how).
+   
    **ANSWER**:
    ```bash
     # be sure to include the ReadGroup (@RG) option!
@@ -89,6 +98,7 @@ NGS Workshop Tutorial
     ```
 
 9. Now, Run GATK's `MarkDuplicates` tool on the BAM file to identify optical and PCR duplicate reads.
+    
     **ANSWER**:
     ```bash
     gatk MarkDuplicates --java-options '-Xmx1G'  --VALIDATION_STRINGENCY SILENT \
@@ -97,6 +107,7 @@ NGS Workshop Tutorial
     ```
 
 10. Run `samtools stats` and `plot-bamstats` on the BAM file and examine the results.
+    
     **ANSWER**: The commands to run:
     ```bash
     samtools stats --ref-seq Scerevisiae.fasta SRR10178655.sorted.mdup.bam >SRR10178655.stats
@@ -105,15 +116,23 @@ NGS Workshop Tutorial
     open -a Safari.app SRR10178655.html
     ```
     - What is the mode insert size of the sequencing library?
-        **ANSWER**: Find the "Insert Size" plot (top-left plot). It should be ~252 bp.
+        
+	  **ANSWER**: Find the "Insert Size" plot (top-left plot). It should be ~252 bp.
+	
     - What is the estimated read base-call error rate?
-        **ANSWER**: 0.77%, but this may be an over-estimate, as real polymorphisms count as mismatches
+        
+	  **ANSWER**: 0.77%, but this may be an over-estimate, as real polymorphisms count as mismatches
+	
     - What fraction of your reads are duplicates?
-        **ANSWER**: 2.0%, high duplication percentages may be indicative of a low-complexity sequencing library, biased over-amplification of short fragments during PCR amplification, or the library was under-loaded onto the flowcell.
+        
+	  **ANSWER**: 2.0%, high duplication percentages may be indicative of a low-complexity sequencing library, biased over-amplification of short fragments during PCR amplification, or the library was under-loaded onto the flowcell.
+	
     - Within which base quality score range do the majority of mismatches occur? (*HINT*: see the "Mismatches per cycle" plot). Record the upper value of the range to use as the minimum base quality threshold for variant calling a later step.
-        **ANSWER**: From the "Mismatches per cycle" plot, you should observe that the yellowy-brown line representing `20 >= Q > 10` has an over-representation of base-call errors, so we want to set our minimum base-quality score to 20 to exclude them. To be really thorough, we should also check the alignments using `samtools tview` that these mismatches are in fact errors and not single-nucleotide variants.
+        
+	  **ANSWER**: From the "Mismatches per cycle" plot, you should observe that the yellowy-brown line representing `20 >= Q > 10` has an over-representation of base-call errors, so we want to set our minimum base-quality score to 20 to exclude them. To be really thorough, we should also check the alignments using `samtools tview` that these mismatches are in fact errors and not single-nucleotide variants.
 
 11. Use `samtools view` to keep alignments with `PAIRED` and `PROPER_PAIR` flags *AND DO NOT* contain `UNMAP`, `MUNMAP`, `SECONDARY`, `QCFAIL`, `DUP`, or `SUPPLEMENTARY` flags; write the output as a BAM file. Index this new file with SAMtools (*HINT*: see `samtools flags` for help with flags). Be sure to index your filtered BAM file.
+    
     **ANSWER**: We can create SAM/BAM flag-based filters by using `samtools flags` and combining the filters with commas:
     ```
     # Combine the binary array values for flags we DO want our reads to have:
@@ -129,6 +148,7 @@ NGS Workshop Tutorial
     ```
     
 12. Using the base quality score determined in ~~Step 9~~ (<= typo) *Step 10* as the minimum base quality threshold, call SNPs using the GATK HaplotypeCaller. **NOTE**: using `--java-options '-Xmx1G'` below allows us to increate the maximum amount of memory allocated to GATK to run. If you ever encounter out-of-memory errors, increase this value (spaces not allowed between `-Xmx` and requested memory size).
+    
     **ANSWER**:
     ```bash
     gatk HaplotypeCaller --java-options '-Xmx1G' \
@@ -145,6 +165,7 @@ NGS Workshop Tutorial
     chrI	4	16
     chrI	5	16
     ```
+    
     **ANSWER**: To get the best results, also set the base quality threshold (`-q`) and mapping quality threshold (`-Q`) flags to the same as you used for variant calling:
     ```bash
     samtools depth -q 20 -Q 30 SRR10178655.sorted.mdup.filter.bam >SRR10178655.sorted.mdup.filter.depth
@@ -168,6 +189,7 @@ NGS Workshop Tutorial
     14 |]                                       
     15 |                                        
     ```
+    
     **ANSWER**: See [hist.py](hist.py); I chose min depth theshold of 21 and max depth threshold of 57.
 
 15. Filter SNPs and Indels for variant loci within the center 95% of the depth distribution (use your distribution from above; estimating by eye is fine). To filter loci, use VCFtools:
@@ -178,6 +200,7 @@ NGS Workshop Tutorial
     ```
 
 16. Finally, how many of these SNPs and Indels intersect CDS features? (*HINT*: extract CDS features into a new GFF3 file and use `bedtools intersect` to do this to extract unique SNP loci).
+    
     **ANSWER**: With my depth thresholds, I get 6192 variant loci intersecting CDS sequences:
     ```bash
     # Extract just the CDS features:
